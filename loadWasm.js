@@ -10,7 +10,11 @@ function fetchAndInstantiateWasm (url, imports) {
   .then(module => WebAssembly.instantiate(module, imports || {}))
   .then(instance => instance.exports);
 }
-fetchAndInstantiateWasm('./program.wasm')
+fetchAndInstantiateWasm('./program.wasm', {
+  env: {
+    consoleLog: num => console.log(num)
+  }
+})
 .then(m => {
-  window.getSqrt = m.getSqrt;
+  console.log(m.getSqrt(25));
 });
