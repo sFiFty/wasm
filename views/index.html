@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+</body>
+<script>
+const Module = {};    // create the Module object to hold the wasm code
+loadWASM = () => {
+  
+  return new Promise((resolve) => {
+    
+    fetch('../program.wasm')    // load the .wasm file
+      .then(response => response.arrayBuffer())
+      .then((buffer) => {    //return ArrayBuffer
+        Module.wasmBinary = buffer;   // assign buffer to Module
+        
+        const script = document.createElement('script');
+        script.src = 'program.wasm';   // set script source
+        
+        script.onload = () => {    // once script has loaded
+          console.log("Loaded Emscripten.");
+          resolve(Module);    // return Module
+        };
+        document.body.appendChild(script); // append script to DOM
+      });
+  });
+};
+loadWASM().then((m) => {    // 'm' now holds _myFunc()
+  console.log(m);
+});
+</script>
+</html>
