@@ -10,36 +10,7 @@ function fetchAndInstantiateWasm (url, imports) {
   .then(module => WebAssembly.instantiate(module, imports || {}))
   .then(instance => instance.exports);
 }
-fetchAndInstantiateWasm('./program.wasm', {
-  env: {
-    consoleLog: num => console.log(num)
-  }
-})
-.then(m => {
-  console.log(m.getSqrt(25));
-});
 
-let wasmMalloc, wasmFree;
-
-fetchAndInstantiateWasm('./dynamic.wasm', {
-  env: {
-    malloc: len => wasmMalloc(len),
-    free: addr => wasmFree(addr),
-  }
+fetchAndInstantiateWasm('./fib.wasm').then(data => {
+  console.log(data.fib(8));
 })
-.then(m => {
-  fetchAndInstantiateWasm('./memory.wasm', {
-    env: {
-      memory: m.memory
-    }
-  })
-  .then(m => {
-    wasmMalloc = m.malloc;
-    wasmFree = m.free;
-  })
-  .then(() => {
-    console.log(m.createRecord(2));
-    console.log(m.createRecord(5));
-  })
-  
-});
