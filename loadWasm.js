@@ -1,3 +1,3 @@
-fetch('/add').then(data => {
+fetch('/string').then(data => {
   console.log(data);
 });
